@@ -1,6 +1,5 @@
 package org.hankster.time
 
-import com.sun.codemodel.internal.JOp.xor
 import java.time.temporal.Temporal
 import java.time.temporal.TemporalUnit
 
