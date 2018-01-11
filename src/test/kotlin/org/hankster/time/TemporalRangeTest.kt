@@ -19,14 +19,16 @@ class TemporalRangeTest {
     assertTrue { 2010.asYear in 2000.asYear..2020.asYear }
     assertTrue { OffsetDateTime.now() in 1.hours.ago..1.hours.fromNow }
     (2010.asYear..2020.asYear).count() shouldEqual 11
-    (LocalDate.of(2010,1,1)..LocalDate.of(2020,12,31) unit YEARS).count() shouldEqual 11
-    (LocalDate.of(2010,1,1)..LocalDate.of(2020,12,31) unit MONTHS).count() shouldEqual 11 * 12
-    (LocalDate.of(2010,1,1)..LocalDate.of(2020,12,31)).count() shouldEqual 11 * 365 + 3
+    (2010.asYear until 2020.asYear).count() shouldEqual 10
+    (LocalDate.of(2010, 1, 1)..LocalDate.of(2020, 12, 31) unit YEARS).count() shouldEqual 11
+    (LocalDate.of(2010, 1, 1)..LocalDate.of(2020, 12, 31) unit MONTHS).count() shouldEqual 11 * 12
+    (LocalDate.of(2010, 1, 1)..LocalDate.of(2020, 12, 31)).count() shouldEqual 11 * 365 + 3
 
     fun isWeekday(temporal: Temporal) = temporal.dayOfWeek!! in MONDAY..FRIDAY
     fun isHoliday(temporal: Temporal) = temporal.monthDay in listOf(
-        MonthDay.of(1,1), MonthDay.of(5,31), MonthDay.of(12,25))
-    val workdays2017: Int = (LocalDate.of(2017,1,1)..LocalDate.of(2017,12,31))
+        MonthDay.of(1, 1), MonthDay.of(5, 31), MonthDay.of(12, 25))
+
+    val workdays2017: Int = (LocalDate.of(2017, 1, 1)..LocalDate.of(2017, 12, 31))
         .filter(::isWeekday).filter { !isHoliday(it) }.count()
     workdays2017 shouldEqual 258
   }
@@ -64,7 +66,7 @@ class TemporalRangeTest {
     val start = LocalDate.of(2017, 3, 1)!!
     val end = LocalDate.of(2017, 3, 1)!!
 
-    for(d in start..end unit YEARS) {
+    for (d in start..end unit YEARS) {
       counter++
     }
 
@@ -78,8 +80,8 @@ class TemporalRangeTest {
     val start = LocalDate.of(2000, 3, 1)!!
     val end = LocalDate.of(2009, 3, 1)!!
 
-    for(d in start..end unit YEARS step 2) {
-      counter ++
+    for (d in start..end unit YEARS step 2) {
+      counter++
     }
 
     counter shouldEqual 5
@@ -91,8 +93,8 @@ class TemporalRangeTest {
     val start = LocalDate.of(2017, 3, 3)!!
     val end = LocalDate.of(2017, 3, 1)!!
 
-    for(d in start..end unit DAYS step -1 ) {
-      counter ++
+    for (d in start..end unit DAYS step -1) {
+      counter++
     }
 
     counter shouldEqual 3
@@ -100,12 +102,12 @@ class TemporalRangeTest {
 
   @Test
   fun `Range should use the Temporal's native precision as the default unit in a for loop`() {
-    val start = LocalDate.of(2017,3,1)!!
-    val end = LocalDate.of(2017, 3,4)!!
+    val start = LocalDate.of(2017, 3, 1)!!
+    val end = LocalDate.of(2017, 3, 4)!!
     var counter = 0
 
     // default precision of LocalDate is DAYS
-    for(d in start..end) {
+    for (d in start..end) {
       counter++
     }
 

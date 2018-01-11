@@ -4,16 +4,19 @@ import java.time.*
 import java.time.temporal.*
 
 val Long.nanos get() = Duration.ofNanos(this)!!
+val Long.micros get() = Duration.ofNanos(this * 1000L)
 val Long.millis get() = Duration.ofMillis(this)!!
 val Long.seconds get() = Duration.ofSeconds(this)!!
 val Long.minutes get() = Duration.ofMinutes(this)!!
 val Long.hours get() = Duration.ofHours(this)!!
 val Int.nanos get() = toLong().nanos
+val Int.micros get() = toLong().micros
 val Int.millis get() = toLong().millis
 val Int.seconds get() = toLong().seconds
 val Int.minutes get() = toLong().minutes
 val Int.hours get() = toLong().hours
 val Double.nanos get() = this.toLong().nanos
+val Double.micros get() = (this * 1000).nanos
 val Double.millis get() = (this * 1000000).nanos
 val Double.seconds: Duration get() = this.toLong().let { s -> s.seconds + ((this - s) * 1000000000).nanos }
 val Double.minutes get() = (this * 60).seconds
@@ -60,6 +63,8 @@ operator fun DayOfWeek.dec(): DayOfWeek = minus(1L)
 val TemporalAmount.ago get() = (OffsetDateTime.now(ZoneOffset.UTC) - this)!!
 val TemporalAmount.fromNow get() = (OffsetDateTime.now(ZoneOffset.UTC) + this)!!
 
+// temporal queries
+
 val TemporalAccessor.precision: TemporalUnit? get() = query(TemporalQueries.precision())
 val TemporalAccessor.yr: Year? get() = query(Year::from)
 val TemporalAccessor.yearMonth: YearMonth? get() = query(YearMonth::from)
@@ -76,6 +81,8 @@ val TemporalAccessor.offsetDateTime: OffsetDateTime? get() = query(OffsetDateTim
 val TemporalAccessor.zone: ZoneId? get() = query(TemporalQueries.zone())
 val TemporalAccessor.zoneId: ZoneId? get() = query(ZoneId::from)
 val TemporalAccessor.zonedDateTime: ZonedDateTime? get() = query(ZonedDateTime::from)
+
+// temporal adjusters
 
 val <T: Temporal> T.atStartOfMonth get() = with(TemporalAdjusters.firstDayOfMonth())!!
 val <T: Temporal> T.atEndOfMonth get() = with(TemporalAdjusters.lastDayOfMonth())!!

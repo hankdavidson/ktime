@@ -16,6 +16,7 @@ class TimeTest {
   @Test
   fun `conversion expectations`() {
     1.nanos shouldEqual Duration.ofNanos(1)
+    1.micros shouldEqual Duration.ofNanos(1000)
     1.millis shouldEqual Duration.ofMillis(1)
     1.seconds shouldEqual Duration.ofSeconds(1)
     1.minutes shouldEqual Duration.ofMinutes(1)
@@ -25,6 +26,7 @@ class TimeTest {
     1.months shouldEqual Period.ofMonths(1)
     1.years shouldEqual Period.ofYears(1)
     1L.nanos shouldEqual Duration.ofNanos(1)
+    1L.micros shouldEqual Duration.ofNanos(1000L)
     1L.millis shouldEqual Duration.ofMillis(1)
     1L.seconds shouldEqual Duration.ofSeconds(1)
     1L.minutes shouldEqual Duration.ofMinutes(1)
@@ -34,6 +36,7 @@ class TimeTest {
     1L.months shouldEqual Period.ofMonths(1)
     1L.years shouldEqual Period.ofYears(1)
     2.5.nanos shouldEqual Duration.ofNanos(2)
+    2.5.micros shouldEqual Duration.ofNanos(2500)
     2.5.millis shouldEqual Duration.ofNanos(2500000)
     2.5.seconds shouldEqual Duration.ofSeconds(2, 500000000)
     2.5.minutes shouldEqual Duration.ofSeconds(150)
@@ -53,6 +56,11 @@ class TimeTest {
     1.days * -1 shouldEqual Period.ofDays(-1)
     1.years + 1.months + 1.weeks + 1.days shouldEqual Period.of(1, 1, 8)
     1.years * 2 shouldEqual Period.ofYears(2)
+
+    // Duration is comparable, Period is not
+    assertTrue { 1.minutes < 1.hours }
+    assertTrue { 1.minutes <= 60.seconds }
+    assertTrue { 1000.nanos == 1.micros }
   }
 
   @Test
