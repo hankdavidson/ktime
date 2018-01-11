@@ -76,8 +76,7 @@ from OffsetDateTime to LocalDateTime, but not vice-versa because LocalDateTime d
 ## Temporal Ranges
 Although java 8's time library doesn't support the idea of a Range, this library does. In addition to offering a `step` modifier, these 
 ranges also offer a `unit` modifier. The unit modifier is used to specify the unit (`MINUTES`, `DAYS`, etc.) to use if you iterate over
- the 
-range. If no unit is specified, the native precision us used (e.g. the native precision for a date is `DAYS`, the native pecision for 
+the range. If no unit is specified, the native precision is used (e.g. the native precision for a date is `DAYS`, the native precision for 
 DateTimes is `NANOS`)
 
 Inclusive ranges

@@ -4,10 +4,13 @@ import java.time.temporal.Temporal
 import java.time.temporal.TemporalUnit
 
 abstract class TemporalRange<T>(override val start: T, override val endInclusive: T, val step: Long = 1L) : ClosedRange<T>, Iterable<T>
-    where T : Temporal, T : Comparable<T>
+    where T : Temporal, T : Comparable<T> {
+  abstract infix fun unit(newUnit: TemporalUnit?): TemporalRange<T>
+  abstract infix fun step(newStep: Long): TemporalRange<T>
+}
 
 class TemporalRangeInclusive<T>(start: T, endInclusive: T, unit: TemporalUnit? = null, step: Long = 1L) :
-    ClosedRange<T>, Iterable<T>, TemporalRange<T>(start, endInclusive, step) where T : Temporal, T : Comparable<T> {
+    TemporalRange<T>(start, endInclusive, step) where T : Temporal, T : Comparable<T> {
 
   val unit: TemporalUnit = unit ?: start.precision!!
 
@@ -32,17 +35,18 @@ class TemporalRangeInclusive<T>(start: T, endInclusive: T, unit: TemporalUnit? =
 
     override fun next(): T {
       val next = current
+      @Suppress("UNCHECKED_CAST")
       current = current.plus(step, unit) as T
       return next
     }
   }
 
-  infix fun unit(newUnit: TemporalUnit?) = TemporalRangeInclusive(start, endInclusive, newUnit, step)
-  infix fun step(newStep: Long) = TemporalRangeInclusive(start, endInclusive, unit, newStep)
+  override infix fun unit(newUnit: TemporalUnit?) = TemporalRangeInclusive(start, endInclusive, newUnit, step)
+  override infix fun step(newStep: Long) = TemporalRangeInclusive(start, endInclusive, unit, newStep)
 }
 
-class TemporalRangeExclusive<T>(override val start: T, override val endInclusive: T, unit: TemporalUnit? = null, val step: Long = 1L) :
-    ClosedRange<T>, Iterable<T> where T : Temporal, T : Comparable<T> {
+class TemporalRangeExclusive<T>(start: T, endInclusive: T, unit: TemporalUnit? = null, step: Long = 1L) :
+    TemporalRange<T>(start, endInclusive, step) where T : Temporal, T : Comparable<T> {
 
   val unit: TemporalUnit = unit ?: start.precision!!
 
@@ -67,14 +71,15 @@ class TemporalRangeExclusive<T>(override val start: T, override val endInclusive
 
     override fun next(): T {
       val next = current
+      @Suppress("UNCHECKED_CAST")
       current = current.plus(step, unit) as T
       return next
     }
   }
 
-  infix fun unit(newUnit: TemporalUnit?) = TemporalRangeExclusive(start, endInclusive, newUnit, step)
-  infix fun step(newStep: Long) = TemporalRangeExclusive(start, endInclusive, unit, newStep)
+  override infix fun unit(newUnit: TemporalUnit?) = TemporalRangeExclusive(start, endInclusive, newUnit, step)
+  override infix fun step(newStep: Long) = TemporalRangeExclusive(start, endInclusive, unit, newStep)
 }
 
-operator fun <T> T.rangeTo(other: T): TemporalRangeInclusive<T> where T : Temporal, T : Comparable<T> = TemporalRangeInclusive(this, other)
-infix fun <T> T.until(other: T): TemporalRangeExclusive<T> where T : Temporal, T : Comparable<T> = TemporalRangeExclusive(this, other)
+operator fun <T> T.rangeTo(other: T): TemporalRange<T> where T : Temporal, T : Comparable<T> = TemporalRangeInclusive(this, other)
+infix fun <T> T.until(other: T): TemporalRange<T> where T : Temporal, T : Comparable<T> = TemporalRangeExclusive(this, other)
